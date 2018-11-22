@@ -1,0 +1,5 @@
+<td *ngIf="!editable">{{contact.name}}</td>
+<td *ngIf="!editable">{{contact.phone}}</td>
+<td *ngIf="editable"><input class="form-control" [(ngModel)]="contact.name"/></td>
+<td *ngIf="editable"><input class="form-control" [(ngModel)]="contact.phone"/></td>
+<td><button class="btn" (click)="onEdit()">{{editable ? 'Save': 'Edit'}}</button></td>

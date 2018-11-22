@@ -1,0 +1,22 @@
+<div *ngIf="selectedContact">
+  {{selectedContact.name}}
+</div>
+
+<table class="table">
+<thead>
+    <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>&nbsp;</th>
+    </tr>
+</thead>  
+
+<tr>
+    <td><input class="form-control" [(ngModel)]="newContact.name"></td>
+    <td><input class="form-control" [(ngModel)]="newContact.phone"></td>
+    <td><button class="btn btn-primary" (click)="addContact()">Add Contact</button> </td>
+</tr>     
+
+<tr *ngFor="let contact of contacts" app-editable-contact [contact]="contact">
+</tr>    
+</table>
