@@ -1,0 +1,28 @@
+sudo: required
+language: node_js
+node_js:
+  - "9"
+services:
+  - docker
+
+before_install:
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+
+install:
+  - npm install
+  - npm install -g @angular/cli
+
+script:
+  - ng build --prod --aot
+  # build docker images
+  - docker build -t contacts .
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    # push to heroku
+    heroku container:login;
+    heroku container:push web -a $HEROKU_APP_NAME;
+    heroku container:release web -a $HEROKU_APP_NAME;
+  branch: master

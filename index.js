@@ -5,7 +5,7 @@ var cors = require('cors');
 var path = require('path') 
 
 const CONTACTS_APP_DIR = "/dist/contacts-app"; 
-var port = 3000;
+var port = (process.env.PORT || 3000);
 var BASE_URL = "/api/v1";
 var filename = __dirname + "/contacts.json";
 
