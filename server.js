@@ -2,7 +2,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var DataStore = require('nedb');
 var cors = require('cors');
-var path = require('path') 
+var path = require('path');
+var Contact = require('./contacts');
 
 const CONTACTS_APP_DIR = "/dist/contacts-app"; 
 var BASE_API_PATH = "/api/v1";
@@ -27,14 +28,13 @@ app.get('/', function(req, res) {
 
 
 app.get(BASE_API_PATH + "/contacts", (req, res) => {
-    db.find({}, (err, contacts) => {
+    Contact.find((err, contacts) => {
         if (err) {
             console.error("Error accessing database");
             res.sendStatus(500);
         } else {
             res.send(contacts.map((contact) => {
-                delete contact._id;
-                return contact;
+                return contact.cleanup();
             }));
         }
     });
@@ -45,8 +45,14 @@ app.post(BASE_API_PATH + "/contacts", (req, res) => {
     // Create a new contact
     console.log(Date()+" - POST /contacts");
     var contact = req.body;
-    db.insert(contact);
-    res.sendStatus(201);
+    Contact.create(contact, (err) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(500);
+        } else {
+            res.sendStatus(201);
+        }
+    });
 });
 
 app.put(BASE_API_PATH + "/contacts", (req, res) => {
