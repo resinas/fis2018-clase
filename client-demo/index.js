@@ -17,7 +17,7 @@ app.get(baseAPI + "/contacts", (req, response) => {
     contactsResource.getAllContacts()
         .then((body) => {
             response.send(body);
-        }, (error) => {
+        }).catch((error) => {
             console.log('error:'+error);
             response.sendStatus(500);
         });
