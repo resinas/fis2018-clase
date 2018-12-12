@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "mocha --timeout 10000",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "client": "node client-demo/index.js"
   },
   "private": true,
   "dependencies": {
@@ -33,7 +34,10 @@
     "passport-localapikey": "0.0.4",
     "passport-localapikey-update": "^0.6.0",
     "path": "^0.12.7",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
     "rxjs": "~6.3.3",
+    "urljoin": "^0.1.5",
     "uuid": "^3.3.2",
     "zone.js": "~0.8.26"
   },
