@@ -37,6 +37,7 @@
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "rxjs": "~6.3.3",
+    "url-join": "^4.0.0",
     "urljoin": "^0.1.5",
     "uuid": "^3.3.2",
     "zone.js": "~0.8.26"
