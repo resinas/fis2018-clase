@@ -3,11 +3,18 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var sinon = require('sinon');
 var Contact = require('../contacts');
+var ApiKey = require('../apikeys');
 var expect = chai.expect;
 
 chai.use(chaiHttp);
 
 describe('Contacts API', () => {
+
+    before(() => {
+        var ApiKeyStub = sinon.stub(ApiKey, 'findOne');
+        ApiKeyStub.yields(null, new ApiKey({user: "test"}));    
+    })
+
     it('hola mundo de prueba', (done) => {
         var x = 3;
         var y = 5;
@@ -42,6 +49,7 @@ describe('Contacts API', () => {
         it('should return all contacts', (done) => {
             chai.request(server.app)
                 .get('/api/v1/contacts')
+                .query({apikey: "test"})
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body).to.be.an('array');
