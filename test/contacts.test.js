@@ -34,4 +34,10 @@ describe('Contact DB connection', () => {
             });
         });
     });
+
+    after((done) => {
+        mongoose.connection.db.dropDatabase(() => {
+            mongoose.connection.close(done);
+        });
+    });    
 })
