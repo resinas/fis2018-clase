@@ -24,8 +24,6 @@ app.get(baseAPI + "/contacts", (req, response) => {
 
 });
 
-
-
 app.listen(port, () => {
-    console.log("Server with GUI up and running!!");
+    console.log("Server up and running!!");
 });
