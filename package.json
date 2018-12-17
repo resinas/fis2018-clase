@@ -6,6 +6,7 @@
     "start": "node index.js",
     "build": "ng build",
     "test": "mocha --timeout 10000",
+    "client-test": "mocha --exit client-demo",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "client": "node client-demo/index.js"
