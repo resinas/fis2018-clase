@@ -39,7 +39,6 @@ app.get('/', function(req, res) {
 
 
 app.get(BASE_API_PATH + "/contacts", 
-        passport.authenticate('localapikey', {session:false}), 
         (req, res) => {
             Contact.find((err, contacts) => {
                 if (err) {
@@ -78,7 +77,12 @@ app.put(BASE_API_PATH + "/contacts", (req, res) => {
 app.delete(BASE_API_PATH + "/contacts", (req, res) => {
     // Remove all contacts
     console.log(Date()+" - DELETE /contacts");
-    db.remove({});    
+    Contact.deleteMany({}, (err) => {
+        if(err){
+            console.error("Error accesing DB");
+            res.sendStatus(500);
+        }
+    });    
     res.sendStatus(200);
 });
 
@@ -96,56 +100,37 @@ app.get(BASE_API_PATH + "/contacts/:name", (req, res) => {
     var name = req.params.name;
     console.log(Date()+" - GET /contacts/"+name);
 
-    db.find({"name": name},(err,contacts)=>{
+    Contact.find({"name": name},(err,contacts)=>{
         if(err){
             console.error("Error accesing DB");
             res.sendStatus(500);
         }else{
-            if(contacts.length>1){
-                console.warn("Incosistent DB: duplicated name");
-            }
-            res.send(contacts.map((contact)=>{
-                delete contact._id;
-                return contact;
-            })[0]);
-        }
-    });
-});
-
-
-app.delete(BASE_API_PATH + "/contacts/:name", (req, res) => {
-    // Delete a single contact
-    var name = req.params.name;
-    console.log(Date()+" - DELETE /contacts/"+name);
-
-    db.remove({"name": name},{},(err,numRemoved)=>{
-        if(err){
-            console.error("Error accesing DB");
-            res.sendStatus(500);
-        }else{
-            if(numRemoved>1){
-                console.warn("Incosistent DB: duplicated name");
-            }else if(numRemoved == 0) {
+            if (contacts.length == 0) {
                 res.sendStatus(404);
             } else {
-                res.sendStatus(200);
-            }
+                res.send(contacts[0].cleanup());
+                if(contacts.length>1) {
+                    console.warn("Incosistent DB: duplicated name");
+                }
+            } 
         }
     });
 });
+
+
 app.delete(BASE_API_PATH + "/contacts/:name", (req, res) => {
     // Delete a single contact
     var name = req.params.name;
     console.log(Date()+" - DELETE /contacts/"+name);
 
-    db.remove({"name": name},{},(err,numRemoved)=>{
+    Contact.deleteMany({"name": name},(err, removeResult)=>{
         if(err){
             console.error("Error accesing DB");
             res.sendStatus(500);
         }else{
-            if(numRemoved>1){
+            if(removeResult.n>1){
                 console.warn("Incosistent DB: duplicated name");
-            }else if(numRemoved == 0) {
+            }else if(removeResult.n == 0) {
                 res.sendStatus(404);
             } else {
                 res.sendStatus(200);
@@ -165,14 +150,16 @@ app.put(BASE_API_PATH + "/contacts/:name", (req, res) => {
         return;
     }
 
-    db.update({"name": name},updatedContact,(err,numUpdated)=>{
+    Contact.replaceOne({"name": name},
+                updatedContact,
+                (err,updateResult)=>{
         if(err){
             console.error("Error accesing DB");
             res.sendStatus(500);
         }else{
-            if(numUpdated>1){
+            if(updateResult.n>1){
                 console.warn("Incosistent DB: duplicated name");
-            }else if(numUpdated == 0) {
+            }else if(updateResult.n == 0) {
                 res.sendStatus(404);
             } else {
                 res.sendStatus(200);
